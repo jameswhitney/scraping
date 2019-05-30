@@ -15,7 +15,7 @@ import bs4
 # Before making the request check to see what endpoint contains the encrypted message.
 # Once the proper html is recieved via a get request use the Beautiful Soup library
 # to parse the HTML. It is neccessary to view the website's source code to
-# determine which tag, tags or classes which encapsulte the encrypted message. After the appropriate tags
+# determine which tags or classes which encapsulte the encrypted message. After the appropriate tags
 # are found, use select method in Beautiful Soup to extract any data within the tags or CSS classes.
 # Finally determine how to decrypt the message based on information found within the site.
 
@@ -23,10 +23,16 @@ def get_html():
     blog_url = 'https://www.thegoldbugs.com/blog'
     res = requests.get(blog_url)
 
+    # Parse response using Beautiful Soup object and use it's methods to extract 
+    # the desired text from the site. 
     soup = bs4.BeautifulSoup(res.text, 'lxml')
+    # print(soup)
+
+    # Select the CSS class and the pre tag contained in this class
+    # to create a list with one element that contains all text within the pre tag
+    # as well as the tag itself
     blog = soup.select('.sqs-block-content > pre')
 
-    text = blog
-    print(text)
+    print(blog)
 
 get_html()
