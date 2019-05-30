@@ -11,28 +11,36 @@ import requests
 import bs4
 
 
-# Use methods within the requests library to obtain html from https://www.thegoldbugs.com
-# Before making the request check to see what endpoint contains the encrypted message.
-# Once the proper html is recieved via a get request use the Beautiful Soup library
-# to parse the HTML. It is neccessary to view the website's source code to
-# determine which tags or classes which encapsulte the encrypted message. After the appropriate tags
-# are found, use select method in Beautiful Soup to extract any data within the tags or CSS classes.
-# Finally determine how to decrypt the message based on information found within the site.
+def get_hidden_message():
 
-def get_html():
+    # Create a GET request to https://www.thegoldbugs.com/blog,
+    # if the response is successful assign it to a response variable
     blog_url = 'https://www.thegoldbugs.com/blog'
-    res = requests.get(blog_url)
+    response = requests.get(blog_url)
 
     # Parse response using Beautiful Soup object and use it's methods to extract 
-    # the desired text from the site. 
-    soup = bs4.BeautifulSoup(res.text, 'lxml')
-    # print(soup)
+    # the HTML text from the site. 
+    soup = bs4.BeautifulSoup(response.text, 'lxml')
 
     # Select the CSS class and the pre tag contained in this class
     # to create a list with one element that contains all text within the pre tag
     # as well as the tag itself
     blog = soup.select('.sqs-block-content > pre')
 
-    print(blog)
+    
+    # Extract text from list and remove any tags from HTML
+    text = blog[0].getText()
 
-get_html()
+    # Create empty string to hold decrypted text. 
+    # Loop through text that is split on '-----'
+    # Skip the first element since it is empty
+    # Then grab the first character of each element
+    # and add that character to the result string 
+    result = ''
+    for sentence in text.split('-----')[1:]:
+        result += sentence[0]
+    return result
+
+
+# Print the result of the decrypted text
+print(get_hidden_message())
